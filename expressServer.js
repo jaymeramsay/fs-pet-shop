@@ -10,34 +10,33 @@ var port = process.env.PORT || 8002;
 app.disable('x-powered-by');
 
 app.get('/pets', function (req, res) {
-  if (req.url.includes('/pets')) {
-    // if "pets" exits, then read the "pet"
-    let petData = 'pets.json';
-    fs.readFile(petsPath, 'utf8', (err, petData) => {
+  let petData = 'pets.json'
+  fs.readFile(petsPath, 'utf8', function (err, petData) {
+    if (err) {
+      console.error(err.stack);
+      return res.sendStatus(500);
+    }
 
-      // 3
-      res.setHeader('Content-Type', 'application/json');
+    let pets = JSON.parse(petData);
 
-      // 4
-      let petID = req.url.slice(1).split('/')[1];
-      let pets = JSON.parse(petData);
-
-      // 5
-      if (pets[petID]) {
-        let pet = pets[petID];
-        console.log(pet);
-        res.send(JSON.stringify(pet));
-      }
-      else {
-        res.send(JSON.stringify(pets));
-      }
-    });
-  }
-  else {
-    res.end();
-  }
-
+    res.send(petData);
+  });
 });
+
+app.get('/pets:id', function (req, res) {
+  fs.readFile(petsPath, 'utf8', function (err, petData) {
+    if (err) {
+      console.error(err.stack);
+      return res.sendStatus(500);
+    }
+
+    let id = Number.parseInt(req.params.id);
+    let pets = JSON.parse(petData);
+
+  })
+})
+
+
 
 app.listen(port, function () {
   console.log('Listening on port', port);
