@@ -23,21 +23,23 @@ app.get('/pets', function (req, res) {
   });
 });
 
-app.get('/pets:id', function (req, res) {
+app.get('/pets/:id', function (req, res) {
   fs.readFile(petsPath, 'utf8', function (err, petData) {
+    console.log('this works here');
     if (err) {
       console.error(err.stack);
       return res.sendStatus(500);
     }
 
     let id = Number.parseInt(req.params.id);
+    console.log(id);
     let pets = JSON.parse(petData);
-
-    // if (id < 0 || id >= pets.length || Number.isNaN(id)) {
-    //   return res.sendStatus(404);
-    // }
-    // res.set('Content-Type', 'text/plain');
-    // res.send(pets[id]);
+    console.log(petData);
+    if (id < 0 || id >= pets.length || Number.isNaN(id)) {
+      return res.sendStatus(404);
+    }
+    res.set('Content-Type', 'application/json');
+    res.send(pets[id]);
   });
 });
 
